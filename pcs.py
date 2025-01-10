@@ -9,9 +9,6 @@ from datetime import datetime
 app = Flask(__name__, static_folder='static')
 CORS(app)  # Enable Cross-Origin Requests
 
-# Logging
-logging.basicConfig(filename='app.log', level=logging.ERROR)
-
 # In-memory databases
 users = {
     "admin": "password123",
@@ -180,4 +177,4 @@ def not_found_error(error):
 
 if __name__ == '__main__':
     hospital_data = load_data("healthcare_dataset.csv")
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0',port=8000)
