@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Appointment</title>
+    <style>
+        /* Global Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: url('https://www.softclinicsoftware.com/wp-content/uploads/2022/04/digital-composite-doctor-with-white-graph-with-flare-against-blurry-background-with-light-blue-overlay.jpg') no-repeat center center/cover;
+            font-family: 'Arial', sans-serif;
+            color: black;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 20px 0;
+        }
+
+        .form-container, #appointment-list {
+            max-width: 500px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        .form-container label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            background: #ff7eb3;
+            color: black;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #ff4d6d;
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .search-container input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .search-container button {
+            width: 80px;
+            padding: 10px;
+            background: #4caf50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .appointment-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .appointment-item button {
+            width: auto;
+            padding: 5px 10px;
+            margin: 5px 5px 0 0;
+            font-size: 0.9rem;
+            background: #4caf50;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .appointment-item button:hover {
+            background: #45a049;
+        }
+
+        #appointment-list {
+            display: none;
+        }
+        .back-home {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-home:hover {
+             background-color: #45a049;
+        }
+    </style>
+    <script>
+        async function createAppointment(event) {
+            event.preventDefault();
+
+            const patientName = document.getElementById("patient_name").value;
+            const doctorName = document.getElementById("doctor_name").value;
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+
+            const response = await fetch("/appointments", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    patient_name: patientName,
+                    doctor_name: doctorName,
+                    date: date,
+                    time: time
+                })
+            });
+
+            if (response.ok) {
+                alert("Appointment created successfully!");
+                searchAppointments(); // Refresh the list
+            } else {
+                alert("Failed to create appointment");
+            }
+        }
+
+        async function searchAppointments() {
+            const searchQuery = document.getElementById("search-box").value.toLowerCase();
+            const response = await fetch("/appointments");
+            const data = await response.json();
+
+            const appointmentList = document.getElementById("appointment-list");
+            appointmentList.innerHTML = "";
+
+            if (data.length > 0) {
+                const filteredAppointments = data.filter(appointment =>
+                    appointment.patient_name.toLowerCase().includes(searchQuery)
+                );
+
+                if (filteredAppointments.length > 0) {
+                    filteredAppointments.forEach(appointment => {
+                        const item = document.createElement("div");
+                        item.classList.add("appointment-item");
+                        item.innerHTML = `
+                            <strong>ID:</strong> ${appointment.id}<br>
+                            <strong>Patient:</strong> ${appointment.patient_name}<br>
+                            <strong>Doctor:</strong> ${appointment.doctor_name}<br>
+                            <strong>Date:</strong> ${appointment.date}<br>
+                            <strong>Time:</strong> ${appointment.time}<br>
+                            <button onclick="editAppointment(${appointment.id})">Edit</button>
+                            <button onclick="deleteAppointment(${appointment.id})">Delete</button>
+                        `;
+                        appointmentList.appendChild(item);
+                    });
+                    appointmentList.style.display = "block";
+                } else {
+                    appointmentList.innerHTML = "<p>No appointments found for this patient.</p>";
+                    appointmentList.style.display = "block";
+                }
+            } else {
+                appointmentList.innerHTML = "<p>No appointments available.</p>";
+                appointmentList.style.display = "block";
+            }
+        }
+
+        async function deleteAppointment(id) {
+            const response = await fetch(`/appointments/${id}`, { method: "DELETE" });
+            if (response.ok) {
+                alert("Appointment deleted successfully!");
+                searchAppointments();
+            } else {
+                alert("Failed to delete appointment");
+            }
+        }
+
+        async function editAppointment(id) {
+            const newDate = prompt("Enter new date (YYYY-MM-DD):");
+            const newTime = prompt("Enter new time (HH:MM):");
+
+            const response = await fetch(`/appointments/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ date: newDate, time: newTime })
+            });
+
+            if (response.ok) {
+                alert("Appointment updated successfully!");
+                searchAppointments();
+            } else {
+                alert("Failed to update appointment");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Schedule an Appointment</h1>
+    <div class="form-container">
+        <form onsubmit="createAppointment(event)">
+            <label for="patient_name">Patient Name:</label>
+            <input type="text" id="patient_name" placeholder="Enter your name" required>
+
+            <label for="doctor_name">Doctor Name:</label>
+            <input type="text" id="doctor_name" placeholder="Enter doctor's name" required>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+
+            <label for="time">Time:</label>
+            <input type="time" id="time" required>
+
+            <button type="submit">Book Appointment</button>
+        </form>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search-box" placeholder="Search patient name">
+        <button onclick="searchAppointments()">Search</button>
+    </div>
+
+    <div id="appointment-list"></div>
+    <a class="back-home" href="/">Back to Home</a>
+</body>
+</html>

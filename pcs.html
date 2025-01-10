@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Case Similarity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+           font-family: 'Poppins', sans-serif;
+           margin: 0;
+           padding: 0;
+           color: #333;
+           display: flex;
+           flex-direction: column;
+           min-height: 100vh;
+           background-image: url('https://wallpaperaccess.com/full/136920.jpg');
+           background-size: cover;
+           background-position: center;
+           background-attachment: fixed;
+       }
+
+       h1{
+            margin: 0.5em 0;
+            color: white;
+            animation: fadeIn 2s ease-in-out;
+           
+       } 
+       h2{
+            margin: 0.5em 0;
+            color: white;
+            animation: fadeIn 2s ease-in-out;
+            text-align: left;
+        }
+       h3 {
+           margin: 0.5em 0;
+           color: #004aad;
+           animation: fadeIn 2s ease-in-out;
+       }
+
+       p {
+           margin: 0.5em 0;
+           line-height: 1.6;
+           animation: fadeIn 2s ease-in-out;
+           text-align: center;
+       }
+       h4{
+           margin: 0.5em 0;
+           line-height: 1.6;
+           animation: fadeIn 2s ease-in-out;
+           text-align: left;
+       }
+
+       /* Navbar Styles */
+       .navbar {
+            background: rgba(211, 211, 211, 0);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: black;
+            padding: 1em 2em;
+       }
+
+       .navbar .logo img {
+           height: 40px;
+           margin-right: 10px;
+       }
+
+       .navbar nav ul {
+           list-style: none;
+           display: flex;
+           gap: 20px;
+           padding: 0;
+           margin: 0;
+       }
+
+       .navbar nav ul li a {
+           color: white;
+           text-decoration: none;
+           font-weight: 600;
+           transition: color 0.3s, transform 0.3s;
+       }
+
+       .navbar nav ul li a:hover {
+           color: #ffbf00;
+           transform: scale(1.1);
+       }
+
+       /* Hero Section */
+       .hero {
+           text-align: center;
+           padding: 4em 2em;
+           color: white;
+           animation: slideIn 2s ease-out;
+       }
+
+       .hero h2 {
+           font-size: 2.5em;
+       }
+       .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 90%;
+            box-sizing: border-box;
+            margin-top: 40px;
+        }
+       /* Interactive Section */
+       .interactive-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap:wrap; /* Prevent wrapping */
+            padding: 2em;
+            gap: 20px;
+            animation: zoomIn 1.5s ease-in-out;
+            overflow-x: auto; /* Add horizontal scrolling if necessary */
+        }
+
+
+       .interactive-section .card {
+           background:lightgray;
+           border: 1px solid #ddd;
+           border-radius: 8px;
+           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+           padding: 1.5em;
+           text-align: center;
+           width: 300px;
+           transition: transform 0.3s, box-shadow 0.3s;
+           animation: bounceIn 1s ease-in;
+       }
+
+       .interactive-section .card:hover {
+           transform: scale(1.05);
+           box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+           align-items:end;
+       }
+
+       .interactive-section .card .icon {
+           font-size: 2em;
+           margin-bottom: 0.5em;
+           color: #004aad;
+           animation: rotateIn 1.5s ease-in-out;
+       }
+
+       /* Footer Styles */
+       
+       footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+            margin-top: auto;
+            animation: fadeInUp 1.5s ease-in-out;
+            font-size: 0.9rem;
+        }
+
+       .footer p {
+           margin: 0;
+           text-align: center;
+       }
+       footer a {
+            color: #ffa500;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+       /* Animations */
+       @keyframes fadeIn {
+        
+           from {
+               opacity: 0;
+           }
+           to {
+               opacity: 1;
+           }
+       }
+
+       @keyframes fadeInUp {
+           from {
+               opacity: 0;
+               transform: translateY(20px);
+           }
+           to {
+               opacity: 1;
+               transform: translateY(0);
+           }
+       }
+
+       @keyframes slideIn {
+           from {
+               opacity: 0;
+               transform: translateX(-100%);
+           }
+           to {
+               opacity: 1;
+               transform: translateX(0);
+           }
+       }
+
+       @keyframes zoomIn {
+           from {
+               opacity: 0;
+               transform: scale(0.5);
+           }
+           to {
+               opacity: 1;
+               transform: scale(1);
+           }
+       }
+
+       @keyframes bounceIn {
+           0% {
+               transform: scale(0.5);
+               opacity: 0.5;
+           }
+           50% {
+               transform: scale(1.2);
+               opacity: 1;
+           }
+           100% {
+               transform: scale(1);
+               opacity: 1;
+           }
+       }
+
+       @keyframes rotateIn {
+           from {
+               transform: rotate(-180deg);
+               opacity: 0;
+           }
+           to {
+               transform: rotate(0deg);
+               opacity: 1;
+           }
+       }
+    </style>
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="static/about.html">About Us</a></li>
+                <li><a href="static/contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        
+    </header>
+    <main class="dashboard">
+        <section class="hero">
+            <h2>Welcome to Your Dashboard</h2>
+            <h4>Find similar patient cases quickly and efficiently using our advanced similarity analysis.</h4>
+        </section>
+    <div class="container">
+        <section id="services" class="interactive-section">
+            <div class="card">
+                <i class="icon">🩺</i>
+                <h3>Patient Records</h3>
+                <p>Access and manage patient data securely.</p>
+                <button onclick="redirectToLogin()">Check</button>
+    </div>
+    <script>
+        function redirectToLogin() {
+            window.location.href = '/login';
+        }
+    </script>
+            <div class="card">
+                <i class="icon">📅</i>
+                <h3>Appointments</h3>
+                <p>View, schedule, and manage patient appointments.</p>
+                <button onclick="window.location.href='/appointments-page';">View More</button>
+            </div>
+            </section>
+            </div>
+
+    </main>
+    <footer class="footer">
+        <p>&copy; 2024 EZDI, Inc - an AGS Health company | All rights reserved.</p>
+        <a href="privacy-policy.html">Privacy Policy</a> | <a href="terms-of-service.html">Terms of Service</a>
+    </footer>
+</body>
+</html>
